@@ -16,27 +16,56 @@ function addToList(event) {
     let text = document.getElementById("tempInput").value
 
     if (text !== null && text !== '') {
-      let newToDo = document.createElement('li')
-      newToDo.setAttribute("id", "note" + toDoArray.length)
-
-      // Checkbox in Listenelement einfügen
-      let newCheckbox = document.createElement('input')
-      newCheckbox.type = "checkbox"
-      newCheckbox.setAttribute("id", toDoArray.length)
-      newCheckbox.setAttribute("onclick", "checkNote()")
-      newToDo.appendChild(newCheckbox)
-      newToDo.appendChild(document.createTextNode(text))
       toDoArray.push(text)
-
-      // Input Eingabefeld entfernen
       let removeInput = document.getElementById("tempInput")
       removeInput.parentNode.removeChild(removeInput)
-      list.appendChild(newToDo)
-      button.disabled = false
-      itemCountSpan.innerHTML = toDoArray.length
-      checkNote()
+      fillList()
     }
   }
+}
+
+function fillList() {
+  let liItems = list.getElementsByTagName("li")
+
+  console.log("liItems", liItems)
+  // empty list
+  for (let j = liItems.length; j > 0; j--){
+    list.removeChild(list.childNodes[j-1])
+  }
+  for (let i = 0; i < toDoArray.length; i++) {
+    let id = i
+    let newToDo = document.createElement('li')
+    newToDo.setAttribute("id", "note" + id)
+    // Input Eingabefeld entfernen
+
+    // Checkbox in Listenelement einfügen
+    let newCheckbox = document.createElement('input')
+    newCheckbox.type = "checkbox"
+    newCheckbox.setAttribute("id", id)
+    newCheckbox.setAttribute("onclick", "checkNote()")
+    newToDo.appendChild(newCheckbox)
+    newToDo.appendChild(document.createTextNode(toDoArray[i]))
+
+    // delete Button generieren
+    let deleteButton = document.createElement('button')
+    deleteButton.id = id
+    deleteButton.textContent = "delete"
+    deleteButton.setAttribute("onclick", "deleteNote(" + id + ")")
+
+    newToDo.appendChild(deleteButton)
+
+    list.appendChild(newToDo)
+  }
+  button.disabled = false
+  itemCountSpan.innerHTML = toDoArray.length
+  checkNote()
+}
+
+function deleteNote(id) {
+  list.removeChild(list.childNodes[id])
+  // remove element from arraylist with id
+  toDoArray.splice(id, 1)
+  checkNote()
 }
 
 function checkNote() {
